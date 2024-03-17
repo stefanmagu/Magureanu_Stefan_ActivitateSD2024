@@ -10,6 +10,13 @@ struct Aeroport {
 	int nrTerminale;
 };
 
+//aeroporturi.txt: 
+//1, Otopeni, 20
+//2, Baneasa, 10
+//3, Sibiu, 15
+//4, Baia mare, 12
+//5, Frankfurt, 41
+
 struct Aeroport* adaugaAeroport(struct Aeroport* vector, struct Aeroport aeroport, int* dimensiune) { // shallow copy *vector, deep copy pt ultimul element pe care-l adaugam(struct Aeroport aeroport, mai putin *char nume care e alocat dinamic si e transmis prin referinta);
 	struct Aeroport* copie = (struct Aeroport*)malloc(sizeof(struct Aeroport) * ((*dimensiune) + 1));
 
@@ -55,7 +62,7 @@ struct Aeroport* citireFisier(const char* numeFisier, int* nrAeroporturi) {
 	return vectorAeroporturi;
 }
 
-void citireMatriceFisier(const char* numeFisier, int* nrAeroporturiLinie, int nrClustere, struct Aeroport** aeroporturi) {
+void citireMatriceFisier(const char* numeFisier, int* nrAeroporturiLinie, int nrClustere, struct Aeroport** aeroporturi) { // nrAeroporturiLinie = nr coloane/linie
 
 	FILE* f = fopen(numeFisier, "r");
 
@@ -85,7 +92,7 @@ void citireMatriceFisier(const char* numeFisier, int* nrAeroporturiLinie, int nr
 
 }
 
-float mediaTerminale(struct Aeroport** matrice, int* nrAeroporturiLinie,int paritate) {
+float mediaTerminale(struct Aeroport** matrice, int* nrAeroporturiLinie,int paritate) { //nrAeroporturiLinie = nr coloane/linie
 
 	paritate = paritate % 2;
 	int count = 0;
