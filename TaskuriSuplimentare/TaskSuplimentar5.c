@@ -193,7 +193,105 @@ void stergeMasinaDinLista(struct Nod** nod, int pozitie) {// dublu ** pentru ca 
 
 
 }
+struct Masina* masiniPeste2000(struct Nod** nod, int* dimensiune) { // salvare in vector
+    *dimensiune = 0; // dimensiune vector
+    struct Nod* temp = *nod;
 
+    while (temp != NULL) {
+
+        if (temp->masina.anFabricatie > 2000) {
+            (*dimensiune)++;
+        }
+        temp = temp->next;
+    }
+
+    struct Masina* m = (struct Masina*)malloc(sizeof(struct Masina) * (*dimensiune));
+    int poz = 0;
+    temp = *nod;
+
+    while (temp != NULL) { // deep copy
+        if (temp->masina.anFabricatie > 2000) {
+            m[poz].anFabricatie = temp->masina.anFabricatie;
+            m[poz].cod = temp->masina.cod;
+
+            m[poz].denumire = (char*)malloc(sizeof(char) * (strlen(temp->masina.denumire) + 1));
+            strcpy(m[poz].denumire, temp->masina.denumire);
+
+            m[poz].pret = temp->masina.pret;
+            poz++;
+        }
+        temp = temp->next;
+    }
+
+    return m;
+}
+
+
+void interschimbareNoduri(struct Nod* n1, struct Nod* n2) { // interschimbare oricare 2 noduri
+
+    struct Masina temp;
+    temp.anFabricatie = n1->masina.anFabricatie;
+    temp.cod = n1->masina.cod;
+    temp.denumire = (char*)malloc(sizeof(char) * (strlen(n1->masina.denumire) + 1));
+    strcpy(temp.denumire, n1->masina.denumire);
+    temp.pret = n1->masina.pret;
+
+    n1->masina.anFabricatie = n2->masina.anFabricatie;
+    n1->masina.cod = n2->masina.cod;
+    n1->masina.denumire = (char*)malloc(sizeof(char) * (strlen(n2->masina.denumire) + 1));
+    strcpy(n1->masina.denumire, n2->masina.denumire);
+    n1->masina.pret = n2->masina.pret;
+
+    n2->masina.anFabricatie = temp.anFabricatie;
+    n2->masina.cod = temp.cod;
+    n2->masina.denumire = (char*)malloc(sizeof(char) * (strlen(temp.denumire) + 1));
+    strcpy(n2->masina.denumire, temp.denumire);
+    n2->masina.pret = temp.pret;
+
+
+}
+
+void interschimbareElementeLista(struct Nod** nod, int pozitie1, int pozitie2) {
+    int dimensiune = 0; // dimensiune vector
+    struct Nod* temp1 = *nod;
+    struct Nod* temp2 = *nod;
+
+    while (temp1 != NULL) {
+        dimensiune++;
+        temp1 = temp1->next;
+    }
+
+    if (pozitie1 > dimensiune || pozitie2 > dimensiune || pozitie1 < 0 || pozitie2 < 0 || pozitie1 == pozitie2 || *nod == NULL) {
+        return;
+    }
+
+    temp1 = *nod;
+
+    for (int i = 0; i < pozitie1 - 1; i++) {
+        temp1 = temp1->next;
+    }
+    for (int i = 0; i < pozitie2 - 1; i++) {
+        temp2 = temp2->next;
+    }
+
+    // interschimbam:
+    interschimbareNoduri(temp1, temp2);
+
+}
+
+void freeNod(struct Nod* nod) {
+    struct Nod* current = nod;
+    struct Nod* next;
+
+    while (current != NULL) {
+        next = current->next;
+        free(current->masina.denumire);
+        free(current);
+        current = next;
+    }
+
+    nod = NULL;
+}
 
 
 void main() {
@@ -206,7 +304,7 @@ void main() {
 
     struct Masina* m1 = NULL;
     m1 = citireFisier(numeFisier, &dimensiune);
- // afiseazaMasini(m1, dimensiune);
+    // afiseazaMasini(m1, dimensiune);
 
     struct Nod* nod = NULL;
 
@@ -217,6 +315,24 @@ void main() {
     stergeMasinaDinLista(&nod, 2);
     afiseazaListaMasina(nod);
 
+    int dimVector = 0;
+    struct Masina* m = NULL;
+    m = masiniPeste2000(&nod, &dimVector);
 
-    freeMasina(m1);
+    printf("\n\n");
+
+    afiseazaMasini(m, dimVector);
+
+    printf("\n\n");
+
+    interschimbareElementeLista(&nod, 3, 5);
+    afiseazaListaMasina(nod);
+
+
+    printf("\n\n");
+
+
+
+    freeNod(nod);
+    // freeMasinaVector(&m, &dimVector);
 }
